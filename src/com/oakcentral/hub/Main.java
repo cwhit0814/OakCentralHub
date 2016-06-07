@@ -5,6 +5,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.oakcentral.hub.listeners.OnJoin;
+
 public class Main extends JavaPlugin {
 
 	public final String name = "OakCentralHub";
@@ -13,6 +15,7 @@ public class Main extends JavaPlugin {
 
 	public void onEnable() {
 		Bukkit.getServer().getLogger().info(name + " has been enabled!");
+		Bukkit.getPluginManager().registerEvents(new OnJoin(), this);
 	}
 
 	public void onDisable() {
