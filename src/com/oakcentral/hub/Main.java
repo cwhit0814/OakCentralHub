@@ -12,6 +12,12 @@ import com.oakcentral.hub.listeners.OnJoin;
 import com.oakcentral.hub.listeners.PlayerInteract;
 
 public class Main extends JavaPlugin {
+	
+	private static Main instance;
+	
+	public static Main getInstance() {
+		return instance;
+		}
 
 	public final String name = "OakCentralHub";
 
@@ -26,12 +32,14 @@ public class Main extends JavaPlugin {
 
 	public void onEnable() {
 		Bukkit.getServer().getLogger().info(name + " has been enabled!");
+		instance = this;
 		Bukkit.getPluginManager().registerEvents(new OnJoin(), this);
 		Bukkit.getPluginManager().registerEvents(new PlayerInteract(), this);
 	}
 
 	public void onDisable() {
 		Bukkit.getServer().getLogger().info(name + " has been disabled!");
+		instance = null;
 	}
 
 	public static void createServerSelectorMenu(Player player, String name, int colorValue) {
