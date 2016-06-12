@@ -1,7 +1,14 @@
 package com.oakcentral.hub;
 
+import java.util.Random;
+
+import net.minecraft.server.v1_8_R3.EnumParticle;
+import net.minecraft.server.v1_8_R3.PacketPlayOutWorldParticles;
+
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -12,12 +19,12 @@ import com.oakcentral.hub.listeners.OnJoin;
 import com.oakcentral.hub.listeners.PlayerInteract;
 
 public class Main extends JavaPlugin {
-	
+
 	private static Main instance;
-	
+
 	public static Main getInstance() {
 		return instance;
-		}
+	}
 
 	public final String name = "OakCentralHub";
 
@@ -42,7 +49,8 @@ public class Main extends JavaPlugin {
 		instance = null;
 	}
 
-	public static void createServerSelectorMenu(Player player, String name, int colorValue) {
+	public static void createServerSelectorMenu(Player player, String name,
+			int colorValue) {
 		Inventory inv = Bukkit.getServer().createInventory(null, 27, name);
 
 		ItemStack panes = new ItemStack(Material.STAINED_GLASS_PANE, 1,
@@ -73,8 +81,9 @@ public class Main extends JavaPlugin {
 
 		player.openInventory(inv);
 	}
-	
-	public static void createGadetsMenu(Player player, String name, int colorValue) {
+
+	public static void createGadetsMenu(Player player, String name,
+			int colorValue) {
 		Inventory inv = Bukkit.getServer().createInventory(null, 54, name);
 
 		ItemStack panes = new ItemStack(Material.STAINED_GLASS_PANE, 1,
@@ -111,8 +120,9 @@ public class Main extends JavaPlugin {
 
 		player.openInventory(inv);
 	}
-	
-	public static void createSettingsMenu(Player player, String name, int colorValue) {
+
+	public static void createSettingsMenu(Player player, String name,
+			int colorValue) {
 		Inventory inv = Bukkit.getServer().createInventory(null, 27, name);
 
 		ItemStack panes = new ItemStack(Material.STAINED_GLASS_PANE, 1,
@@ -143,4 +153,35 @@ public class Main extends JavaPlugin {
 
 		player.openInventory(inv);
 	}
+
+	public static void createHelix(Player player) {
+	    Location loc = player.getLocation();
+	    int radius = 2;
+	    for(double y = 0; y <= 50; y+=0.05) {
+	        double x = radius * Math.cos(y);
+	        double z = radius * Math.sin(y);
+	        PacketPlayOutWorldParticles packet = new PacketPlayOutWorldParticles(randParticle(), true, (float) (loc.getX() + x), (float) (loc.getY() + y), (float) (loc.getZ() + z), 0, 0, 0, 0, 1, 1000);
+	        for(Player online : Bukkit.getOnlinePlayers()) {
+	            ((CraftPlayer)online).getHandle().playerConnection.sendPacket(packet);
+	        }
+	    }
+	}
+
+	public static EnumParticle randParticle() {
+		Random r = new Random();
+		int rNumb = r.nextInt(5) + 1;
+		if (rNumb == 1)
+			return EnumParticle.FIREWORKS_SPARK;
+		else if (rNumb == 2)
+			return EnumParticle.VILLAGER_HAPPY;
+		else if (rNumb == 3)
+			return EnumParticle.SPELL_WITCH;
+		else if (rNumb == 4)
+			return EnumParticle.FLAME;
+		else if (rNumb == 5) {
+			return EnumParticle.BLOCK_CRACK;
+		}
+		return null;
+	}
+
 }
