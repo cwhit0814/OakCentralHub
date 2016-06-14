@@ -15,6 +15,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.oakcentral.hub.listeners.OnEntityHit;
 import com.oakcentral.hub.listeners.OnJoin;
 import com.oakcentral.hub.listeners.PlayerInteract;
 
@@ -42,6 +43,7 @@ public class Main extends JavaPlugin {
 		instance = this;
 		Bukkit.getPluginManager().registerEvents(new OnJoin(), this);
 		Bukkit.getPluginManager().registerEvents(new PlayerInteract(), this);
+		Bukkit.getPluginManager().registerEvents(new OnEntityHit(), this);
 	}
 
 	public void onDisable() {
@@ -55,6 +57,9 @@ public class Main extends JavaPlugin {
 
 		ItemStack panes = new ItemStack(Material.STAINED_GLASS_PANE, 1,
 				(short) colorValue);
+		ItemStack chestplate = new ItemStack(Material.GOLD_CHESTPLATE);
+		ItemStack sword = new ItemStack(Material.DIAMOND_SWORD);
+		ItemStack grass = new ItemStack(Material.GRASS);
 		ItemMeta panesMeta = panes.getItemMeta();
 		panesMeta.setDisplayName(" ");
 		panes.setItemMeta(panesMeta);
@@ -67,6 +72,9 @@ public class Main extends JavaPlugin {
 		inv.setItem(6, panes);
 		inv.setItem(7, panes);
 		inv.setItem(8, panes);
+		inv.setItem(11, chestplate);
+		inv.setItem(13, sword);
+		inv.setItem(15, grass);
 		inv.setItem(17, panes);
 		inv.setItem(26, panes);
 		inv.setItem(25, panes);
@@ -82,7 +90,7 @@ public class Main extends JavaPlugin {
 		player.openInventory(inv);
 	}
 
-	public static void createGadetsMenu(Player player, String name,
+	public static void createGadgetsMenu(Player player, String name,
 			int colorValue) {
 		Inventory inv = Bukkit.getServer().createInventory(null, 54, name);
 
