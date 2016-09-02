@@ -1,31 +1,45 @@
 package com.oakcentral.hub;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Random;
+import java.util.UUID;
 
+import net.md_5.bungee.api.ChatColor;
 import net.minecraft.server.v1_8_R3.EnumParticle;
 import net.minecraft.server.v1_8_R3.PacketPlayOutWorldParticles;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Pig;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.oakcentral.hub.listeners.OnEntityHit;
+import com.oakcentral.hub.listeners.OnFly;
 import com.oakcentral.hub.listeners.OnJoin;
 import com.oakcentral.hub.listeners.PlayerInteract;
+import com.oakcentral.hub.pets.PetMaker;
 
-public class Main extends JavaPlugin {
+public class Main extends JavaPlugin implements Listener {
 
 	private static Main instance;
 
 	public static Main getInstance() {
 		return instance;
 	}
+
+	public static HashMap<UUID, UUID> pets = new HashMap<UUID, UUID>();
+	public static HashMap<LivingEntity, Player> pet = new HashMap<LivingEntity, Player>();
 
 	public final String name = "OakCentralHub";
 
@@ -44,11 +58,30 @@ public class Main extends JavaPlugin {
 		Bukkit.getPluginManager().registerEvents(new OnJoin(), this);
 		Bukkit.getPluginManager().registerEvents(new PlayerInteract(), this);
 		Bukkit.getPluginManager().registerEvents(new OnEntityHit(), this);
+		Bukkit.getPluginManager().registerEvents(new OnFly(), this);
 	}
 
 	public void onDisable() {
 		Bukkit.getServer().getLogger().info(name + " has been disabled!");
 		instance = null;
+	}
+
+	@Override
+	public boolean onCommand(CommandSender sender, Command cmd, String label,
+			String[] args) {
+		if (sender instanceof Player) {
+			Player player = (Player) sender;
+			Pig pig = player.getWorld().spawn(player.getLocation(), Pig.class);
+			if (cmd.getName().equalsIgnoreCase("pet")) {
+				pig.setCustomName(ChatColor.GOLD + player.getName() + "s Pet");
+				pig.setCustomNameVisible(true);
+				PetMaker.makePet(pig, player.getUniqueId());
+				pets.put(pig.getUniqueId(), player.getUniqueId());
+				pet.put(pig, player);
+			}
+			if (cmd.getName().equalsIgnoreCase("petremove")) {}
+		}
+		return true;
 	}
 
 	public static void createServerSelectorMenu(Player player, String name,
@@ -63,6 +96,23 @@ public class Main extends JavaPlugin {
 		ItemMeta panesMeta = panes.getItemMeta();
 		panesMeta.setDisplayName(" ");
 		panes.setItemMeta(panesMeta);
+		ItemMeta swordMeta = sword.getItemMeta();
+		swordMeta.setDisplayName("KitPvP");
+		swordMeta.setLore(Arrays.asList(ChatColor.BLUE
+				+ "Fight to the death with kits that you unlock."));
+		sword.setItemMeta(swordMeta);
+		ItemMeta chestplateMeta = chestplate.getItemMeta();
+		chestplateMeta.setDisplayName("Towny");
+		chestplateMeta.setLore(Arrays.asList(ChatColor.GOLD
+				+ "Build towns and nations with friends... ",
+				"or random strangers."));
+		chestplate.setItemMeta(chestplateMeta);
+		ItemMeta grassMeta = grass.getItemMeta();
+		grassMeta.setDisplayName("Skyblock");
+		grassMeta.setLore(Arrays.asList(ChatColor.GREEN
+				+ "Start on a small floating island and try to ",
+				"survive while you expand your island."));
+		grass.setItemMeta(grassMeta);
 		inv.setItem(0, panes);
 		inv.setItem(1, panes);
 		inv.setItem(2, panes);
@@ -163,16 +213,20 @@ public class Main extends JavaPlugin {
 	}
 
 	public static void createHelix(Player player) {
-	    Location loc = player.getLocation();
-	    int radius = 2;
-	    for(double y = 0; y <= 50; y+=0.05) {
-	        double x = radius * Math.cos(y);
-	        double z = radius * Math.sin(y);
-	        PacketPlayOutWorldParticles packet = new PacketPlayOutWorldParticles(randParticle(), true, (float) (loc.getX() + x), (float) (loc.getY() + y), (float) (loc.getZ() + z), 0, 0, 0, 0, 1, 1000);
-	        for(Player online : Bukkit.getOnlinePlayers()) {
-	            ((CraftPlayer)online).getHandle().playerConnection.sendPacket(packet);
-	        }
-	    }
+		Location loc = player.getLocation();
+		int radius = 2;
+		for (double y = 0; y <= 50; y += 0.05) {
+			double x = radius * Math.cos(y);
+			double z = radius * Math.sin(y);
+			PacketPlayOutWorldParticles packet = new PacketPlayOutWorldParticles(
+					randParticle(), true, (float) (loc.getX() + x),
+					(float) (loc.getY() + y), (float) (loc.getZ() + z), 0, 0,
+					0, 0, 1, 1000);
+			for (Player online : Bukkit.getOnlinePlayers()) {
+				((CraftPlayer) online).getHandle().playerConnection
+						.sendPacket(packet);
+			}
+		}
 	}
 
 	public static EnumParticle randParticle() {

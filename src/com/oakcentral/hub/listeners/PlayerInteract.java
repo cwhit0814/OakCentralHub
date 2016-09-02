@@ -5,9 +5,13 @@ import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
+import org.bukkit.World;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Snowball;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -17,6 +21,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import com.oakcentral.hub.Main;
 
 public class PlayerInteract implements Listener {
+
+	// ServerInfo target = ProxyServer.getInstance().getServerInfo("Hub");
 
 	List<Material> banned = Arrays.asList(new Material[] { Material.AIR,
 			Material.BEDROCK, Material.SOIL, Material.WALL_SIGN,
@@ -36,6 +42,7 @@ public class PlayerInteract implements Listener {
 	@EventHandler
 	public void onPlayerUse(PlayerInteractEvent event) throws Exception {
 		Player p = event.getPlayer();
+		World world = p.getWorld();
 		if (event.getAction().equals(Action.RIGHT_CLICK_AIR)
 				|| event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
 			if (p.getItemInHand().getType() == Material.COMPASS) {
@@ -50,38 +57,55 @@ public class PlayerInteract implements Listener {
 			} else if (p.getItemInHand().getType() == Material.APPLE) {
 				event.setCancelled(true);
 				Main.createHelix(p);
+			} else if (p.getItemInHand().getType() == Material.GOLD_BARDING) {
+				Location loc = p
+						.getEyeLocation()
+						.toVector()
+						.add(p.getLocation().getDirection().multiply(2))
+						.toLocation(p.getWorld(), p.getLocation().getYaw(),
+								p.getLocation().getPitch());
+				Snowball snow = p.getWorld().spawn(loc, Snowball.class);
+				snow.setShooter(p);
+				snow.setVelocity(p.getEyeLocation().getDirection().multiply(2));
+				world.playSound(p.getLocation(), Sound.CHICKEN_EGG_POP, 1, 10);
 			}
 		}
 	}
-	
+
 	@EventHandler
 	public void onInventoryClick(InventoryClickEvent event) {
-		if (!ChatColor.stripColor(event.getInventory().getName()).equalsIgnoreCase("Server Selector")) {
+		if (!ChatColor.stripColor(event.getInventory().getName())
+				.equalsIgnoreCase("Server Selector")) {
 			return;
 		}
-		
+
 		Player player = (Player) event.getWhoClicked();
 		event.setCancelled(true);
-		
-		if (event.getCurrentItem() == null || event.getCurrentItem().getType() == Material.AIR) {
+
+		if (event.getCurrentItem() == null
+				|| event.getCurrentItem().getType() == Material.AIR) {
 			player.closeInventory();
 			return;
 		}
-		
+
 		ConsoleCommandSender console = Bukkit.getConsoleSender();
-		switch(event.getCurrentItem().getType()) {
+		switch (event.getCurrentItem().getType()) {
 		case GOLD_CHESTPLATE:
-			player.sendMessage(ChatColor.GOLD + "Sending you to the Towny server.");
+			player.sendMessage(ChatColor.GOLD
+					+ "Sending you to the Towny server.");
 			player.closeInventory();
 			Bukkit.dispatchCommand(console, "server towny");
+			// ((ProxiedPlayer) player).connect(target);
 			break;
 		case DIAMOND_SWORD:
-			player.sendMessage(ChatColor.GOLD + "Sending you to the KitPvP server.");
+			player.sendMessage(ChatColor.GOLD
+					+ "Sending you to the KitPvP server.");
 			player.closeInventory();
 			Bukkit.dispatchCommand(console, "server kitpvp");
 			break;
 		case GRASS:
-			player.sendMessage(ChatColor.GOLD + "Sending you to the Skyblock server.");
+			player.sendMessage(ChatColor.GOLD
+					+ "Sending you to the Skyblock server.");
 			player.closeInventory();
 			Bukkit.dispatchCommand(console, "server skyblock");
 			break;

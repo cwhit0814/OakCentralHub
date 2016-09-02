@@ -15,15 +15,16 @@ public class OnJoin implements Listener {
 	@EventHandler
 	public void onJoin(PlayerJoinEvent e) {
 		Player p = e.getPlayer();
+		p.setAllowFlight(true);
 		p.getInventory().clear();
 
 		// Server Selector
-		ItemStack serverSel = new ItemStack(Material.COMPASS, 1);
-		ItemMeta im1 = serverSel.getItemMeta();
+		ItemStack serverSelector = new ItemStack(Material.COMPASS, 1);
+		ItemMeta im1 = serverSelector.getItemMeta();
 		im1.setDisplayName(ChatColor.DARK_AQUA + "" + ChatColor.BOLD
 				+ "Server Selector " + ChatColor.RESET + "" + ChatColor.GRAY
 				+ "" + ChatColor.ITALIC + "(Right Click)");
-		serverSel.setItemMeta(im1);
+		serverSelector.setItemMeta(im1);
 
 		// Gadgets
 		ItemStack gadgets = new ItemStack(Material.CHEST, 1);
@@ -42,7 +43,7 @@ public class OnJoin implements Listener {
 				+ "" + ChatColor.ITALIC + "(Right Click)");
 		settings.setItemMeta(im3);
 
-		p.getInventory().setItem(0, serverSel);
+		p.getInventory().setItem(0, serverSelector);
 		p.getInventory().setItem(4, gadgets);
 		p.getInventory().setItem(8, settings);
 	}

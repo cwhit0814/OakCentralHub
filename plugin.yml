@@ -1,4 +1,7 @@
 name: OakCentralHub
 version: 0.0.24
-author: xDrakon
+author: [xDrakon, TekkitCommando]
 main: com.oakcentral.hub.Main
+commands:
+  pet:
+  petremove:
