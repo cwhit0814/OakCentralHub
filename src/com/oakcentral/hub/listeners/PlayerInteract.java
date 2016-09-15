@@ -12,13 +12,16 @@ import org.bukkit.World;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Snowball;
+import org.bukkit.entity.Villager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.oakcentral.hub.Main;
+import com.oakcentral.hub.gui.GUI;
 
 public class PlayerInteract implements Listener {
 
@@ -47,13 +50,13 @@ public class PlayerInteract implements Listener {
 				|| event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
 			if (p.getItemInHand().getType() == Material.COMPASS) {
 				event.setCancelled(true);
-				Main.createServerSelectorMenu(p, "Server Selector", 9);
+				GUI.createServerSelectorMenu(p, "Server Selector", 9);
 			} else if (p.getItemInHand().getType() == Material.CHEST) {
 				event.setCancelled(true);
-				Main.createGadgetsMenu(p, "Gadgets", 5);
+				GUI.createGadgetsMenu(p, "Gadgets", 5);
 			} else if (p.getItemInHand().getType() == Material.SKULL_ITEM) {
 				event.setCancelled(true);
-				Main.createSettingsMenu(p, "Settings", 14);
+				GUI.createSettingsMenu(p, "Settings", 14);
 			} else if (p.getItemInHand().getType() == Material.APPLE) {
 				event.setCancelled(true);
 				Main.createHelix(p);
@@ -69,6 +72,14 @@ public class PlayerInteract implements Listener {
 				snow.setVelocity(p.getEyeLocation().getDirection().multiply(2));
 				world.playSound(p.getLocation(), Sound.CHICKEN_EGG_POP, 1, 10);
 			}
+		}
+	}
+
+	@EventHandler
+	public void onPigClick(PlayerInteractEntityEvent event) {
+		Player player = event.getPlayer();
+		if (event.getRightClicked() instanceof Villager && event.getRightClicked().getCustomName().equalsIgnoreCase("Game Villager")) {
+			GUI.createServerSelectorMenu(player, "Server Selector", 9);
 		}
 	}
 

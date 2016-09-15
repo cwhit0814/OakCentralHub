@@ -1,6 +1,7 @@
 package com.oakcentral.hub.listeners;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -17,6 +18,7 @@ public class OnJoin implements Listener {
 		Player p = e.getPlayer();
 		p.setAllowFlight(true);
 		p.getInventory().clear();
+		p.teleport(new Location(p.getWorld(), 139, 134, 635));
 
 		// Server Selector
 		ItemStack serverSelector = new ItemStack(Material.COMPASS, 1);

@@ -1,5 +1,5 @@
 name: OakCentralHub
-version: 0.0.24
+version: 0.2.1
 author: [xDrakon, TekkitCommando]
 main: com.oakcentral.hub.Main
 commands:
