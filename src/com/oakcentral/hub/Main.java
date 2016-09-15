@@ -37,14 +37,15 @@ public class Main extends JavaPlugin implements Listener {
 	public static Main getInstance() {
 		return instance;
 	}
-
+	
+	//NoAI Villagers
+	Entity villager = Bukkit.getWorld("world").spawnEntity(new Location(Bukkit.getServer().getWorld("world"), -10,4,-81), EntityType.VILLAGER);
+	
+	//Pets
 	public static HashMap<UUID, UUID> pets = new HashMap<UUID, UUID>();
 	public static HashMap<LivingEntity, Player> pet = new HashMap<LivingEntity, Player>();
 
-	public final String name = "OakCentralHub";
-	
-	Entity villager = Bukkit.getWorld("world").spawnEntity(new Location(Bukkit.getServer().getWorld("world"), -10,4,-81), EntityType.VILLAGER);
-
+	//Inventories
 	public static Inventory serverSelector = Bukkit.createInventory(null, 54,
 			"Server Selector");
 	// public static Inventory lobbySelector = Bukkit.createInventory(null, 54,
@@ -55,17 +56,18 @@ public class Main extends JavaPlugin implements Listener {
 			"Player Settings");
 
 	public void onEnable() {
-		Bukkit.getServer().getLogger().info(name + " has been enabled!");
+		Bukkit.getServer().getLogger().info("OakHub" + " has been enabled!");
 		instance = this;
 		Bukkit.getPluginManager().registerEvents(new OnJoin(), this);
 		Bukkit.getPluginManager().registerEvents(new PlayerInteract(), this);
 		Bukkit.getPluginManager().registerEvents(new OnEntityHit(), this);
 		Bukkit.getPluginManager().registerEvents(new OnFly(), this);
 		noAI(villager, "Villager Selector");
+		villager.getLocation().setYaw(180.0f);
 	}
 
 	public void onDisable() {
-		Bukkit.getServer().getLogger().info(name + " has been disabled!");
+		Bukkit.getServer().getLogger().info("OakHub" + " has been disabled!");
 		instance = null;
 		villager.remove();
 	}
@@ -83,7 +85,7 @@ public class Main extends JavaPlugin implements Listener {
 				pets.put(pig.getUniqueId(), player.getUniqueId());
 				pet.put(pig, player);
 			}
-			if (cmd.getName().equalsIgnoreCase("petremove")) {}
+			if (cmd.getName().equalsIgnoreCase("petremove")) {pig.remove();}
 		}
 		return true;
 	}
